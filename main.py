@@ -47,22 +47,18 @@ async def ask_folder_name(message: Message, state: FSMContext):
 async def create_folder(message: Message, state: FSMContext):
     folder_name = message.text
     
-    # Убираем клавиатуру, чтобы не мешала в топике (опционально)
-    await message.answer(f"Создаю папку «{folder_name}»...", reply_markup=get_main_kb())
-    
     try:
         # Бот сам создает тему с нужным именем
-        topic = await message.bot.create_forum_topic(
+        await message.bot.create_forum_topic(
             chat_id=message.chat.id,
             name=folder_name
         )
         
-        # Отправляем приветствие прямо в созданную тему
-        await message.bot.send_message(
-            chat_id=message.chat.id,
-            message_thread_id=topic.message_thread_id,
-            text=f"📁 <b>Папка «{folder_name}» создана!</b>\n\nКидай сюда всё, что хочешь сохранить.",
-            parse_mode="HTML"
+        # Пишем подтверждение в ОБЩИЙ чат (вкладка "Все"), а не в тему
+        await message.answer(
+            f"✅ Папка «{folder_name}» создана!\n\n"
+            "Зайди в неё через меню тем внизу и кидай туда всё, что хочешь сохранить.",
+            reply_markup=get_main_kb()
         )
     except Exception as e:
         await message.answer(f"❌ Ошибка при создании: {e}")
