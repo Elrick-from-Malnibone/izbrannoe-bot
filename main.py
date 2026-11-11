@@ -43,6 +43,10 @@ async def ask_folder_name(message: Message, state: FSMContext):
 
 @dp.message(FolderStates.waiting_for_name)
 async def create_folder(message: Message, state: FSMContext):
+    # Если сообщение пришло из существующей темы, игнорируем его
+    if message.message_thread_id is not None:
+        return
+
     folder_name = message.text
     
     try:
