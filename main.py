@@ -14,11 +14,9 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=None))
 dp = Dispatcher()
 
-# Состояния для создания папки
 class FolderStates(StatesGroup):
     waiting_for_name = State()
 
-# Клавиатура с кнопками
 def get_main_kb():
     return ReplyKeyboardMarkup(
         keyboard=[
@@ -48,13 +46,11 @@ async def create_folder(message: Message, state: FSMContext):
     folder_name = message.text
     
     try:
-        # Бот сам создает тему с нужным именем
         await message.bot.create_forum_topic(
             chat_id=message.chat.id,
             name=folder_name
         )
         
-        # Пишем подтверждение в ОБЩИЙ чат (вкладка "Все"), а не в тему
         await message.answer(
             f"✅ Папка «{folder_name}» создана!\n\n"
             "Зайди в неё через меню тем внизу и кидай туда всё, что хочешь сохранить.",
@@ -69,4 +65,4 @@ async def main():
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(main())       
